@@ -16,7 +16,6 @@
 1. Copy `.env.example` to `.env`
 2. Update with your values:
 ```env
-SECRET_KEY=your-super-secret-jwt-key-here-make-it-long-and-random
 MONGODB_URI=mongodb+srv://financeuser:YOUR_PASSWORD@cluster0.xxxxx.mongodb.net/finance?retryWrites=true&w=majority
 ```
 
@@ -35,7 +34,6 @@ python backend/api/index.py
 1. Push to GitHub
 2. Connect repository to Vercel
 3. Add environment variables in Vercel dashboard:
-   - `SECRET_KEY`: Same as local
    - `MONGODB_URI`: Same as local
 4. Deploy
 
@@ -47,5 +45,5 @@ python backend/api/index.py
 
 ## Troubleshooting
 - **Connection Error**: Check MongoDB URI and network access
-- **Auth Error**: Verify SECRET_KEY is set
+- **Auth Error**: Check session configuration
 - **CORS Error**: Ensure backend is running on correct port
