@@ -15,16 +15,22 @@ CORS(app)
 
 # Configuration
 app.config['SECRET_KEY'] = 'simple-session-key'
-MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://financeuser:SecurePass2024@financetracker.mongodb.net/finance?retryWrites=true&w=majority')
+MONGODB_URI = os.environ.get('MONGODB_URI')
+
+if not MONGODB_URI:
+    raise ValueError("MONGODB_URI environment variable is required")
 
 # MongoDB connection
 try:
-    client = pymongo.MongoClient(MONGODB_URI)
+    client = pymongo.MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+    # Test connection
+    client.server_info()
     db = client['finance']
     users_collection = db['users']
-    print("Connected to MongoDB")
+    print("Connected to MongoDB successfully")
 except Exception as e:
     print(f"MongoDB connection error: {e}")
+    raise e
 
 # Auth decorator
 def login_required(f):
@@ -226,7 +232,20 @@ def get_stats(current_user):
 # Health check
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'healthy'}), 200
+    try:
+        # Test MongoDB connection
+        client.server_info()
+        return jsonify({
+            'status': 'healthy',
+            'mongodb': 'connected',
+            'database': 'finance'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'mongodb': 'disconnected',
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
