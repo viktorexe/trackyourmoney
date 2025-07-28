@@ -1,10 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 import pymongo
 import bcrypt
-import jwt
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import wraps
 from dotenv import load_dotenv
 
@@ -15,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configuration
-app.config['SECRET_KEY'] = os.environ.get('JWT_SECRET', 'dev-jwt-secret-change-in-production')
+app.config['SECRET_KEY'] = 'simple-session-key'
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb+srv://financeuser:SecurePass2024@financetracker.mongodb.net/finance?retryWrites=true&w=majority')
 
 # MongoDB connection
@@ -28,21 +27,16 @@ except Exception as e:
     print(f"MongoDB connection error: {e}")
 
 # Auth decorator
-def token_required(f):
+def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')
-        if not token:
-            return jsonify({'message': 'Token is missing'}), 401
+        username = session.get('username')
+        if not username:
+            return jsonify({'message': 'Login required'}), 401
         
-        try:
-            token = token.split(' ')[1]  # Remove 'Bearer ' prefix
-            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-            current_user = users_collection.find_one({'username': data['username']})
-            if not current_user:
-                return jsonify({'message': 'Invalid token'}), 401
-        except:
-            return jsonify({'message': 'Invalid token'}), 401
+        current_user = users_collection.find_one({'username': username})
+        if not current_user:
+            return jsonify({'message': 'Invalid session'}), 401
         
         return f(current_user, *args, **kwargs)
     return decorated
@@ -111,14 +105,10 @@ def login():
         if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
             return jsonify({'message': 'Invalid credentials'}), 401
         
-        # Generate token
-        token = jwt.encode({
-            'username': username,
-            'exp': datetime.utcnow() + timedelta(days=30)
-        }, app.config['SECRET_KEY'], algorithm='HS256')
+        # Set session
+        session['username'] = username
         
         return jsonify({
-            'token': token,
             'user': {
                 'username': username,
                 'settings': user.get('settings', {})
@@ -129,8 +119,8 @@ def login():
         return jsonify({'message': 'Server error'}), 500
 
 @app.route('/api/verify', methods=['GET'])
-@token_required
-def verify_token(current_user):
+@login_required
+def verify_session(current_user):
     return jsonify({
         'user': {
             'username': current_user['username'],
@@ -138,8 +128,13 @@ def verify_token(current_user):
         }
     }), 200
 
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    session.pop('username', None)
+    return jsonify({'message': 'Logged out successfully'}), 200
+
 @app.route('/api/transactions', methods=['GET'])
-@token_required
+@login_required
 def get_transactions(current_user):
     try:
         user_collection_name = f"user_{current_user['username']}_transactions"
@@ -153,7 +148,7 @@ def get_transactions(current_user):
         return jsonify({'message': 'Server error'}), 500
 
 @app.route('/api/transactions', methods=['POST'])
-@token_required
+@login_required
 def add_transaction(current_user):
     try:
         data = request.get_json()
@@ -195,7 +190,7 @@ def add_transaction(current_user):
         return jsonify({'message': 'Server error'}), 500
 
 @app.route('/api/stats', methods=['GET'])
-@token_required
+@login_required
 def get_stats(current_user):
     try:
         user_collection_name = f"user_{current_user['username']}_transactions"

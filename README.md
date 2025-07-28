@@ -55,7 +55,6 @@ python backend/api/index.py
 Create a `.env` file in the root directory with:
 
 ```env
-JWT_SECRET=your-super-secret-jwt-key-here
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
 ```
 
@@ -65,7 +64,6 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWr
 
 1. Connect your GitHub repository to Vercel
 2. Set environment variables in Vercel dashboard:
-   - `JWT_SECRET`: Your JWT secret key
    - `MONGODB_URI`: Your MongoDB connection string
 3. Deploy automatically with `vercel.json` configuration
 
@@ -75,7 +73,6 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWr
 1. Go to your Vercel project dashboard
 2. Navigate to Settings → Environment Variables
 3. Add:
-   - `JWT_SECRET`: Generate a strong random key
    - `MONGODB_URI`: Your MongoDB Atlas connection string
 
 **For MongoDB Atlas:**
