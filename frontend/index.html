@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>TrackYourMoney - Personal Finance Tracker | Manage Income & Expenses</title>
+    <meta name="title" content="TrackYourMoney - Personal Finance Tracker | Manage Income & Expenses">
+    <meta name="description" content="Free personal finance tracker to manage your money, track income and expenses, monitor spending habits. Bilingual support (Hindi/English). Secure & easy to use.">
+    <meta name="keywords" content="finance tracker, money management, expense tracker, income tracker, budget planner, personal finance, financial planning, money tracker, spending tracker, budget app, finance app, track expenses, manage money, financial health, money management app, budget tracker, expense manager, income manager, financial dashboard, money organizer">
+    <meta name="author" content="viktorexe, vansszh">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English, Hindi">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://trackyourmoney.vercel.app/">
+    <meta property="og:title" content="TrackYourMoney - Personal Finance Tracker">
+    <meta property="og:description" content="Free personal finance tracker to manage your money, track income and expenses. Bilingual support (Hindi/English). Start managing your finances today!">
+    <meta property="og:image" content="https://trackyourmoney.vercel.app/logo.png">
+    <meta property="og:site_name" content="TrackYourMoney">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://trackyourmoney.vercel.app/">
+    <meta property="twitter:title" content="TrackYourMoney - Personal Finance Tracker">
+    <meta property="twitter:description" content="Free personal finance tracker to manage your money, track income and expenses. Bilingual support (Hindi/English).">
+    <meta property="twitter:image" content="https://trackyourmoney.vercel.app/logo.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" href="/logo.png">
+    <link rel="shortcut icon" href="/logo.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://trackyourmoney.vercel.app/">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "TrackYourMoney",
+        "description": "Free personal finance tracker to manage your money, track income and expenses",
+        "url": "https://trackyourmoney.vercel.app/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "viktorexe & vansszh"
+        },
+        "inLanguage": ["en", "hi"],
+        "featureList": [
+            "Income tracking",
+            "Expense management",
+            "Financial dashboard",
+            "Bilingual support",
+            "Secure authentication",
+            "Cross-device sync"
+        ]
+    }
+    </script>
+</head>
+<body class="light-theme">
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <img src="/logo.png" alt="TrackYourMoney Logo" class="nav-logo">
+            <span id="nav-title">TrackYourMoney</span>
+        </div>
+        <div class="nav-controls">
+            <button onclick="setLanguage('en')" class="nav-btn" id="en-btn">EN</button>
+            <button onclick="setLanguage('hi')" class="nav-btn" id="hi-btn">हि</button>
+            <button onclick="toggleTheme()" class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Auth Container -->
+    <div id="auth-container" class="auth-screen">
+        <div class="auth-content">
+            <div class="auth-header">
+                <div class="auth-icon">
+                    <img src="/logo.png" alt="TrackYourMoney Logo" class="auth-logo">
+                </div>
+                <h1 id="main-title">TrackYourMoney</h1>
+                <p id="auth-subtitle">Secure • Simple • Smart</p>
+                <div class="auth-credits">
+                    <span>Made by <strong>viktorexe</strong> & <strong>vansszh</strong></span>
+                </div>
+                <div class="auth-links">
+                    <button onclick="openModal('privacy')" class="link-btn" id="privacy-link">Privacy Policy</button>
+                    <span>•</span>
+                    <button onclick="openModal('terms')" class="link-btn" id="terms-link">Terms of Service</button>
+                </div>
+            </div>
+            
+            <div class="auth-forms">
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h2 id="login-title">Welcome Back</h2>
+                    <form onsubmit="login(event)">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="login-username" placeholder="Username" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" id="login-btn" class="primary-btn">
+                            <span>Login</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        <span id="no-account-text">Don't have an account?</span>
+                        <button onclick="showSignup()" id="signup-link" class="link-btn">Sign Up</button>
+                    </div>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signup-form" class="auth-form hidden">
+                    <h2 id="signup-title">Create Account</h2>
+                    <form onsubmit="signup(event)">
+                        <div class="input-group">
+                            <i class="fas fa-user-plus"></i>
+                            <input type="text" id="signup-username" placeholder="Username" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signup-password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" id="signup-btn" class="primary-btn">
+                            <span>Create Account</span>
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        <span id="have-account-text">Already have an account?</span>
+                        <button onclick="showLogin()" id="login-link" class="link-btn">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app-container" class="app-screen hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span id="welcome-user" class="user-name">Welcome</span>
+                        <span id="user-status" class="user-status">Active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span id="nav-dashboard">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-section="transactions">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span id="nav-transactions">Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-section="safety">
+                    <i class="fas fa-shield-alt"></i>
+                    <span id="nav-safety">Safety Tips</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span id="logout-btn">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <div class="welcome-text">
+                            <h1 id="dashboard-title">Financial Dashboard</h1>
+                            <p id="dashboard-subtitle">Your complete financial overview</p>
+                        </div>
+                        <div class="dashboard-actions">
+                            <button class="quick-add-btn income" onclick="showAddTransaction('income')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="quick-add-btn expense" onclick="showAddTransaction('expense')">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Balance Card -->
+                <div class="main-balance-card">
+                    <div class="balance-content">
+                        <div class="balance-label">
+                            <i class="fas fa-wallet"></i>
+                            <span id="balance-title">Current Balance</span>
+                        </div>
+                        <div class="balance-amount">₹<span id="balance">0</span></div>
+                        <div class="balance-status" id="balance-status">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="balance-status-text">Financial health looks good</span>
+                        </div>
+                    </div>
+                    <div class="balance-visual">
+                        <div class="balance-chart">
+                            <div class="chart-segment income-segment" id="income-segment"></div>
+                            <div class="chart-segment expense-segment" id="expense-segment"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card income-card">
+                        <div class="stat-icon-wrapper">
+                            <div class="stat-icon income-icon">
+                                <i class="fas fa-trending-up"></i>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value income-value">₹<span id="total-income">0</span></div>
+                            <div class="stat-label">
+                                <h3 id="income-title">Total Income</h3>
+                                <p id="income-subtitle">This month</p>
+                            </div>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="progress-bar income-progress" id="income-progress"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card expense-card">
+                        <div class="stat-icon-wrapper">
+                            <div class="stat-icon expense-icon">
+                                <i class="fas fa-trending-down"></i>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value expense-value">₹<span id="total-expense">0</span></div>
+                            <div class="stat-label">
+                                <h3 id="expense-title">Total Expenses</h3>
+                                <p id="expense-subtitle">This month</p>
+                            </div>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="progress-bar expense-progress" id="expense-progress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <div class="activity-header">
+                        <h2 id="recent-activity-title">Recent Activity</h2>
+                        <button class="view-all-btn" onclick="showSection('transactions')">
+                            <span id="view-all-text">View All</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div id="recent-transactions" class="activity-list"></div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="floating-actions">
+                    <button class="fab main-fab" onclick="toggleFAB()">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="fab-menu" id="fab-menu">
+                        <button class="fab income-fab" onclick="showAddTransaction('income')">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="fab-income">Income</span>
+                        </button>
+                        <button class="fab expense-fab" onclick="showAddTransaction('expense')">
+                            <i class="fas fa-arrow-down"></i>
+                            <span id="fab-expense">Expense</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactions-section" class="content-section">
+                <div class="section-header">
+                    <h1 id="transactions-title">Transaction Management</h1>
+                    <p id="transactions-subtitle">Add and manage your financial transactions</p>
+                </div>
+
+                <div class="transaction-form-container">
+                    <div class="form-header">
+                        <h2 id="add-transaction-title">Add New Transaction</h2>
+                    </div>
+                    <form onsubmit="addTransaction(event)" class="modern-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transaction-type" id="type-label">Transaction Type</label>
+                                <div class="select-wrapper">
+                                    <select id="transaction-type" required>
+                                        <option value="income" id="income-option">Income</option>
+                                        <option value="expense" id="expense-option">Expense</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount" id="amount-label">Amount (₹)</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <input type="number" id="amount" placeholder="0.00" required min="0.01" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" id="description-label">Description</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-edit"></i>
+                                <input type="text" id="description" placeholder="Enter transaction details" required>
+                            </div>
+                        </div>
+                        <button type="submit" id="add-btn" class="submit-btn">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Transaction</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="transactions-list-container">
+                    <div class="list-header">
+                        <h2 id="recent-transactions-title">Recent Transactions</h2>
+                        <div class="list-controls">
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i>
+                                <span id="filter-all">All</span>
+                            </button>
+                            <button class="filter-btn" data-filter="income">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="filter-income">Income</span>
+                            </button>
+                            <button class="filter-btn" data-filter="expense">
+                                <i class="fas fa-arrow-down"></i>
+                                <span id="filter-expense">Expenses</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="transactions-list" class="transactions-list"></div>
+                </div>
+            </section>
+
+            <!-- Safety Section -->
+            <section id="safety-section" class="content-section">
+                <div class="section-header">
+                    <h1 id="safety-title">Financial Safety Guide</h1>
+                    <p id="safety-subtitle">Essential tips to protect yourself from financial scams</p>
+                </div>
+
+                <div class="safety-grid">
+                    <div class="safety-card">
+                        <div class="safety-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3 id="tip1-title">Protect Your Credentials</h3>
+                        <p id="tip1-desc">Never share your login details with anyone. Legitimate services will never ask for your password.</p>
+                    </div>
+                    <div class="safety-card">
+                        <div class="safety-icon">
+                            <i class="fas fa-search-dollar"></i>
+                        </div>
+                        <h3 id="tip2-title">Verify Investment Schemes</h3>
+                        <p id="tip2-desc">Research thoroughly before investing. Be skeptical of promises of unrealistic returns.</p>
+                    </div>
+                    <div class="safety-card">
+                        <div class="safety-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 id="tip3-title">Use Official Apps Only</h3>
+                        <p id="tip3-desc">Download apps from official stores only. Check reviews and developer credentials carefully.</p>
+                    </div>
+                    <div class="safety-card">
+                        <div class="safety-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 id="tip4-title">Monitor Your Accounts</h3>
+                        <p id="tip4-desc">Regularly check your bank statements and report any suspicious activity immediately.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="/logo.png" alt="TrackYourMoney" class="footer-logo">
+                    <span>TrackYourMoney</span>
+                </div>
+                <div class="footer-credits">
+                    <span id="footer-credits">Made with ❤️ by <strong>viktorexe</strong> & <strong>vansszh</strong></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <p id="loading-text">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div id="transaction-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Transaction</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="addTransactionModal(event)" class="modal-form">
+                <input type="hidden" id="modal-type" value="income">
+                <div class="form-group">
+                    <label for="modal-amount" id="modal-amount-label">Amount (₹)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-rupee-sign"></i>
+                        <input type="number" id="modal-amount" placeholder="0.00" required min="0.01" step="0.01">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="modal-description" id="modal-description-label">Description</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-edit"></i>
+                        <input type="text" id="modal-description" placeholder="Enter details" required>
+                    </div>
+                </div>
+                <button type="submit" id="modal-submit" class="submit-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Transaction</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" class="policy-modal hidden">
+        <div class="modal-backdrop" onclick="closeModal('privacy')"></div>
+        <div class="policy-content">
+            <div class="policy-header">
+                <h2 id="privacy-title">Privacy Policy</h2>
+                <button class="modal-close" onclick="closeModal('privacy')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="policy-body">
+                <p><strong>Last updated:</strong> July 28, 2025</p>
+                
+                <h3>Information We Collect</h3>
+                <p>We collect only the information necessary to provide our service:</p>
+                <ul>
+                    <li>Username and password for account creation</li>
+                    <li>Financial transaction data you choose to input</li>
+                    <li>Basic usage analytics to improve our service</li>
+                </ul>
+                
+                <h3>How We Use Your Information</h3>
+                <p>Your data is used solely to:</p>
+                <ul>
+                    <li>Provide personal finance tracking services</li>
+                    <li>Sync your data across devices</li>
+                    <li>Improve our application performance</li>
+                </ul>
+                
+                <h3>Data Security</h3>
+                <p>We take security seriously:</p>
+                <ul>
+                    <li>All passwords are encrypted using industry-standard methods</li>
+                    <li>Data is stored securely in MongoDB Atlas</li>
+                    <li>We never share your personal financial information</li>
+                </ul>
+                
+                <h3>Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access your personal data</li>
+                    <li>Delete your account and all associated data</li>
+                    <li>Export your transaction history</li>
+                </ul>
+                
+                <h3>Contact Us</h3>
+                <p>For privacy concerns, contact us through our GitHub repository or email the developers directly.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="terms-modal" class="policy-modal hidden">
+        <div class="modal-backdrop" onclick="closeModal('terms')"></div>
+        <div class="policy-content">
+            <div class="policy-header">
+                <h2 id="terms-title">Terms of Service</h2>
+                <button class="modal-close" onclick="closeModal('terms')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="policy-body">
+                <p><strong>Last updated:</strong> July 28, 2025</p>
+                
+                <h3>Acceptance of Terms</h3>
+                <p>By using TrackYourMoney, you agree to these terms. If you don't agree, please don't use our service.</p>
+                
+                <h3>Service Description</h3>
+                <p>TrackYourMoney is a free personal finance tracking application that helps you:</p>
+                <ul>
+                    <li>Track income and expenses</li>
+                    <li>Monitor your financial health</li>
+                    <li>Access financial safety tips</li>
+                    <li>Sync data across devices</li>
+                </ul>
+                
+                <h3>User Responsibilities</h3>
+                <p>You agree to:</p>
+                <ul>
+                    <li>Provide accurate information</li>
+                    <li>Keep your login credentials secure</li>
+                    <li>Use the service for personal finance tracking only</li>
+                    <li>Not attempt to hack or disrupt the service</li>
+                </ul>
+                
+                <h3>Limitation of Liability</h3>
+                <p>TrackYourMoney is provided "as is" without warranties. We're not liable for:</p>
+                <ul>
+                    <li>Financial decisions made based on our data</li>
+                    <li>Service interruptions or data loss</li>
+                    <li>Third-party actions or security breaches</li>
+                </ul>
+                
+                <h3>Service Availability</h3>
+                <p>We strive for 99% uptime but cannot guarantee uninterrupted service. We may update or discontinue features with notice.</p>
+                
+                <h3>Changes to Terms</h3>
+                <p>We may update these terms occasionally. Continued use means acceptance of new terms.</p>
+                
+                <h3>Contact</h3>
+                <p>Questions about these terms? Reach out via our GitHub repository.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
